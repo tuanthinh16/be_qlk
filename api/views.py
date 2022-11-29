@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from base.models import Account, Product
-from .serializers import AccountSerializer, ProductSerializer, RegisterSerializer, UserSerializer, AccountDTOSerializer
+from base.models import Account, Product, RequestForm
+from .serializers import AccountSerializer, ProductSerializer, RegisterSerializer, UserSerializer, AccountDTOSerializer, RequestFormSerializer
 from rest_framework import generics, permissions
 from knox.models import AuthToken
 from django.contrib.auth import login
@@ -23,8 +23,15 @@ def getproduct(request):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+def getRequestForm(request):
+    res = RequestForm.objects.all()
+    serializer = RequestFormSerializer(res, many=True)
+    return Response(serializer.data)
+
+
 @api_view(['POST'])
-def addproduct(request):
+def add_product(request):
     serializer = ProductSerializer(data=request.data)
     if serializer.is_valid():
         print(serializer.save())
@@ -33,11 +40,64 @@ def addproduct(request):
 
 
 @api_view(['POST'])
-def addaccount(request):
+def edit_product(request, id):
+    serializer = ProductSerializer(data=request.data)
+    if serializer.is_valid():
+        product = Product.objects.get(id=id)
+        product = serializer.data
+        product.save()
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def delete_product(request, id):
+    product = Product.objects.get(id=id)
+    if product:
+        product.delete()
+    return Response({'data': "Xoa thanh cong", 'product': product})
+
+
+@api_view(['POST'])
+def add_account(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
     return Response({'user': serializer.data, 'token': AuthToken.objects.create(user)[1]})
+
+
+@api_view(['POST'])
+def update_account(request, id):
+    serializer = AccountSerializer(data=request.data)
+    faccount = Account.objects.get(id=id)
+    faccount = serializer.data
+    if serializer.is_valid():
+        faccount.save()
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def delete_account(request, id):
+    account = Account.objects.get(id=id)
+    if account:
+        account.delete()
+    return Response({'data': "Xoa thanh cong", 'account': account})
+
+
+@api_view(['POST'])
+def addrequest(request):  # gửi yêu cầu
+    serializer = RequestFormSerializer(data=request.data)
+    if serializer.is_valid():
+        print(serializer.save())
+        serializer.save()
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def change_state(request, id):  # set lại trạng thái duyệt hay chưa
+    req = RequestForm.objects.get(id=id)
+    req.status == False if req.status == True else req.status == False
+    req.save()
+    return Response("Thanh cong")
 
 
 class RegisterAPI(generics.GenericAPIView):

@@ -10,14 +10,21 @@ class Account(models.Model):
     phone = models.CharField(max_length=100)
     email = models.CharField(max_length=200)
     address = models.CharField(max_length=500)
-    userID = models.CharField(max_length=50)
     timecreated = models.DateTimeField(auto_now_add=True)
 
 
 class Product(models.Model):
-    productID = models.CharField(max_length=50)
     name = models.CharField(max_length=300)
     detail = models.CharField(max_length=500)
     type = models.CharField(max_length=100)
     amount = models.IntegerField()
+    timecreated = models.DateTimeField(auto_now_add=True)
+
+
+class RequestForm(models.Model):
+    name = models.CharField(max_length=300)
+    type = models.CharField(max_length=100)
+    productID = models.IntegerField(max_length=100)
+    status = models.BooleanField(default=False)
+    username = models.CharField(max_length=200)
     timecreated = models.DateTimeField(auto_now_add=True)

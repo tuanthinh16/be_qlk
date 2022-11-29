@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from base.models import Account, Product
+from base.models import Account, Product, RequestForm
 from django.contrib.auth.models import User
+
+# account
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -15,11 +17,15 @@ class AccountDTOSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email',
                   'password')
 
+# product
+
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+# user
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -43,3 +49,10 @@ class RegisterSerializer(serializers.ModelSerializer):
             validated_data['username'], validated_data['email'], validated_data['password'])
 
         return user
+# gửi yêu cầu đến admin
+
+
+class RequestFormSerializer(serializers.RequestForm):
+    class Meta:
+        model = RequestForm
+        fields = '__all__'
