@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from base.models import Account, Product
-from .serializers import AccountSerializer, ProductSerializer, RegisterSerializer, UserSerializer
+from .serializers import AccountSerializer, ProductSerializer, RegisterSerializer, UserSerializer, AccountDTOSerializer
 from rest_framework import generics, permissions
 from knox.models import AuthToken
 from django.contrib.auth import login
@@ -48,7 +48,7 @@ class RegisterAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
-        serializers = AccountSerializer(data=request.data)
+        serializers = AccountDTOSerializer(data=request.data)
         if serializers.is_valid():
             serializers.save()
         return Response({

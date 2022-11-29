@@ -6,6 +6,12 @@ from django.contrib.auth.models import User
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
+        fields = '___all__'
+
+
+class AccountDTOSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
         fields = ('id', 'username', 'email',
                   'password')
 
